@@ -1,6 +1,6 @@
 <?php
 
-include './BaseController.php';
+require_once './BaseController.php';
 include './Models/User.php';
 
 class UserController extends BaseController
@@ -13,5 +13,11 @@ class UserController extends BaseController
         ];
 
         $this->render('user/index', ['users' => $users]);
+    }
+
+    public function getUser($data)
+    {
+
+        $this->render("user/profile", ["id" => $_GET["id"]]);
     }
 }

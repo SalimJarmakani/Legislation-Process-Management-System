@@ -1,14 +1,8 @@
 <?php
-include "./Router.php";
 
-$router = new Router();
-function getPath($uri)
-{
+//Contains helper functions
 
-    $path = substr($uri, strlen(getBasePath()));
-    $path = strtok($path, '?');
-    return ["route" => $path, "params" => $_GET];
-}
+
 function getBasePath()
 {
     // Get the current script path
@@ -27,7 +21,10 @@ function getBasePath()
 }
 
 
-$router->addRoute("/", "index", HomeController::class);
-$router->addRoute("user", "index", UserController::class);
-$router->addRoute("user/profile", "getUser", UserController::class);
-return $router;
+function getPath($uri)
+{
+
+    $path = substr($uri, strlen(getBasePath()));
+    $path = strtok($path, '?');
+    return ["route" => $path, "params" => $_GET];
+}

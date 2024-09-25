@@ -1,5 +1,6 @@
 <?php
 $router = include "./routes.php";
+$uri = $_SERVER['REQUEST_URI'];
+$pathData = getPath($uri);
 
-$router->addRoute("/", 'index', UserController::class);
-$router->routeLink("/");
+$router->routeLink($pathData["route"], $pathData);
