@@ -20,4 +20,19 @@ class UserController extends BaseController
 
         $this->render("user/profile", ["id" => $_GET["id"]]);
     }
+
+    public function addUser()
+    {
+
+        $this->render("user/add");
+    }
+    public function createUser()
+    {
+
+        extract($_POST);
+
+        $user = new User($name, $email);
+
+        $this->render("user/create", ["user" => $user]);
+    }
 }
