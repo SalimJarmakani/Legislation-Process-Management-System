@@ -1,8 +1,8 @@
 <?php
 include "./Router.php";
-
 $router = new Router();
 
+$GLOBALS["BASE_URL"] = getBasePath();
 
 
 $router->addRoute("/", "index", HomeController::class);

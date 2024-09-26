@@ -26,7 +26,6 @@ function getPath($uri)
 
     $path = substr($uri, strlen(getBasePath()));
     $path = strtok($path, '?');
-    echo $path;
     if (!isset($path) || trim($path) == "") $path = "/";
     return ["route" => $path, "params" => $_GET];
 }

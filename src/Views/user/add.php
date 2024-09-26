@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <form action="<?php echo getBasePath(); ?>user/create" method="POST">
+    <form action="<?= $GLOBALS["BASE_URL"] ?>user/create" method="POST">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br><br>
 

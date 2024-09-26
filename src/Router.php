@@ -34,7 +34,8 @@ class Router
 
             $controller->$action($data);
         } else {
-            throw new \Exception("Not A Valid Route: $uri");
+            $error = "Not a Valid Route";
+            include "Views/error/error.php";
         }
     }
 }
