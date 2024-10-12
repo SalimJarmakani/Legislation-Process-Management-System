@@ -8,15 +8,15 @@
 </head>
 
 <body>
-    <form action="<?= $GLOBALS["BASE_URL"] ?>user/create" method="POST">
+    <form action="<?= $GLOBALS["BASE_URL"] ?>user/create1" method="POST">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
+        <input type="text" id="name" name="name"><br><br>
 
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
+        <input type="email" id="email" name="email"><br><br>
 
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
+        <input type="password" id="password" name="password"><br><br>
 
         <input type="submit" value="Create User">
     </form>

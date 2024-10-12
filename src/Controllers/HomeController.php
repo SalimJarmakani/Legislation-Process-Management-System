@@ -8,4 +8,9 @@ class HomeController extends BaseController
 
         $this->render('home/index', []);
     }
+
+    public function home1()
+    {
+        $this->render('home/home', []);
+    }
 }

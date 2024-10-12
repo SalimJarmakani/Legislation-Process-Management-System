@@ -1,0 +1,34 @@
+[
+  {
+    "name": "Salim Jarmakani",
+    "email": "dasdas@ceo.com",
+    "password": "$2y$10$WpVyqa8QckHrtRE85fsjK.XCklsuXr3bCMtJ9Ye8QdqnZ5uHnYRIC"
+  },
+  {
+    "name": "Salim Jarmakani",
+    "email": "da@ceo.com",
+    "password": "$2y$10$8vo5SJxi3mAdXcQeaM6lVO89ouWXUKj2kZT7BiKLlPwwsH6V99.By"
+  },
+  {
+    "name": "Salim Jarmakani",
+    "email": "dab@ceo.com",
+    "password": "$2y$10$3QYSTVe5Fvv3HciQwleyYOwdVo6bKi3CE8o2E6mrDXDOs.poqJhym"
+  },
+  {
+    "name": "Salim Jarmakani",
+    "email": "dabc@ceo.com",
+    "password": "$2y$10$ppZlLKRfNaqRpsKIRcE9gOQhV/vhHL2fiqdsGreABcfZ4z0ygombO"
+  },
+  {
+    "name": "ceo",
+    "email": "ceo@gmail.com",
+    "password": "$2y$10$GJvcw6b5CZMTLhZ//wiTMu5xvCpEk9mgX8ePmzVGMvWOxYY5MW4uW",
+    "role": "MP"
+  },
+  {
+    "name": "ok",
+    "email": "ok@email.com",
+    "password": "$2y$10$wu.px6ONHbK6ylG.jjk2puYAQGRT/YQ5TwWSoFea.xXnUP17AV0RS",
+    "role": "noRole"
+  }
+]

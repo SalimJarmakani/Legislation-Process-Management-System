@@ -10,7 +10,7 @@ $files = glob("./Controllers/*.*"); // Use *.* to match all files
 foreach ($files as $file) {
     include $file; // Or require $file
 }
-
+include_once "helpers.php";
 
 class Router
 {
@@ -32,7 +32,12 @@ class Router
             $action = $this->routeList[$uri]["action"];
             $controller = new $controller();
 
-            $controller->$action($data);
+
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                call_user_func_array([$controller, $action], $data);
+            } else {
+                $controller->$action($data);
+            }
         } else {
             $error = "Not a Valid Route";
             include "Views/error/error.php";

@@ -29,3 +29,20 @@ function getPath($uri)
     if (!isset($path) || trim($path) == "") $path = "/";
     return ["route" => $path, "params" => $_GET];
 }
+function getRequiredArguments(ReflectionMethod $reflectionMethod)
+{
+    $requiredArgs = [];
+    foreach ($reflectionMethod->getParameters() as $parameter) {
+        if (!$parameter->isOptional()) {
+            echo $parameter->getName();
+            $requiredArgs[$parameter->getName()] = null;
+        }
+    }
+    return $requiredArgs;
+}
+
+function filterByRequiredArguments(array $otherArray, ReflectionMethod $reflectionMethod)
+{
+    $requiredArgs = getRequiredArguments($reflectionMethod);
+    return array_intersect_key($otherArray, $requiredArgs);
+}

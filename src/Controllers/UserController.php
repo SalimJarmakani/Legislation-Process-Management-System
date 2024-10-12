@@ -29,9 +29,19 @@ class UserController extends BaseController
     public function createUser()
     {
 
-        extract($_POST);
+        $name = $_POST["name"];
+        $email = $_POST["email"];
 
-        $user = new User($name, $email);
+
+        $user = new User($name, $email, "43242");
+
+        $this->render("user/create", ["user" => $user]);
+    }
+
+    public function createUser1($name, $email, $password)
+    {
+
+        $user = new User($name, $email, $password);
 
         $this->render("user/create", ["user" => $user]);
     }

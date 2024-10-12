@@ -8,9 +8,7 @@
 </head>
 
 <body>
-    <h1> <?php echo "user with name: $user->name and Email: $user->email is created" ?></h1>
-    <h1> <?= "Password is $user->password" ?></h1>
-
+    <h1>this is home</h1>
 </body>
 
 </html>
