@@ -7,11 +7,11 @@ class RegistrationRepository
 
     private $dbContext;
 
-    public function __construct($DB = new DB(), $filePath = './localData/users.json')
+    public function __construct($filePath = './localData/users.json')
     {
         $this->filePath = $filePath;
 
-        $this->dbContext = $DB;
+        $this->dbContext = DB::getInstance();
     }
 
     // Load all users from the JSON file
@@ -61,7 +61,7 @@ class RegistrationRepository
     public function getRoleByEmailDB($email)
     {
         // Prepare the SQL query to select the role based on the email
-        $sql = "SELECT role FROM users WHERE email = :email LIMIT 1";
+        $sql = "SELECT role FROM user WHERE email = :email LIMIT 1";
 
         // Execute the query using the query method from the DB class
         $user = $this->dbContext->query($sql, ['email' => $email], true);
@@ -100,14 +100,14 @@ class RegistrationRepository
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
             // Prepare the SQL query to insert the new user
-            $sql = "INSERT INTO users (name, email, password, role) VALUES (:name, :email, :password, :role)";
+            $sql = "INSERT INTO user (username, email, password_hash, role) VALUES (:username, :email, :password_hash, :role)";
 
             // Prepare the statement using the PDO instance
 
             $user = [
-                'name' => $name,
+                'username' => $name,
                 'email' => $email,
-                'password' => $hashedPassword,
+                'password_hash' => $hashedPassword,
                 'role' => $role
             ];
             $execute = $this->dbContext->query($sql, $user);
@@ -136,7 +136,7 @@ class RegistrationRepository
     public function validateCredentialsDB($email, $password)
     {
         // Prepare the SQL query to select the user's hashed password based on the email
-        $sql = "SELECT password FROM users WHERE email = :email LIMIT 1";
+        $sql = "SELECT password_hash FROM user WHERE email = :email LIMIT 1";
 
         // Execute the query using the query method from the DB class
         $user = $this->dbContext->query($sql, ['email' => $email], true);
@@ -144,7 +144,7 @@ class RegistrationRepository
         // Check if a user was found and verify the password
         if (!empty($user)) {
             // Since query returns an array, access the first element
-            $hashedPassword = $user[0]['password'];
+            $hashedPassword = $user[0]['password_hash'];
 
             // Verify the password
             if (password_verify($password, $hashedPassword)) {

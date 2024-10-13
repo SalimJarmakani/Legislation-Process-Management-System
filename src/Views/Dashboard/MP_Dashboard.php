@@ -2,12 +2,10 @@
 
 $currentRole = $_SESSION["Role"];
 
-
-if ($currentRole != "MP") {
+if ($currentRole != "Administrator" && $currentRole != "MP") {
     header("Location: notFound");
 }
-
-
+print_r($bills);
 ?>
 
 <!DOCTYPE html>
@@ -109,15 +107,19 @@ if ($currentRole != "MP") {
         <nav>
             <a href="#">Home</a>
             <a href="#">Profile</a>
-            <a href="Bill/CreateBill">Add New Bill</a>
+            <a href="Bill/AddBill">Add New Bill</a>
             <a href="#">Logout</a>
         </nav>
         <div class="dashboard">
             <div class="section">
                 <h3>Pending Bills</h3>
-                <p>1. Bill Title A - Submission Date: 2024-10-01</p>
-                <p>2. Bill Title B - Submission Date: 2024-10-03</p>
-                <p>3. Bill Title C - Submission Date: 2024-10-05</p>
+                <?php if (!empty($bills)): ?>
+                    <?php foreach ($bills as $bill): ?>
+                        <p><?php echo htmlspecialchars($bill->getTitle()) . " - CreationDate: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No pending bills available.</p>
+                <?php endif; ?>
             </div>
             <div class="section">
                 <h3>Voting Results</h3>

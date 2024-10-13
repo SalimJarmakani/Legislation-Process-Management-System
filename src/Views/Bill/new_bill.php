@@ -54,11 +54,10 @@
 <body>
     <div class="container">
         <h2>Create New Bill</h2>
-        <form method="POST" action="submit_bill.php"> <!-- Replace with your submission handler -->
+        <form action="<?= $GLOBALS["BASE_URL"] ?>Bill/CreateBill" method="POST">
             <input type="text" name="title" placeholder="Bill Title" required><br>
             <textarea name="description" placeholder="Bill Description" rows="5" required></textarea><br>
-            <input type="text" name="author" placeholder="Author Name" required><br>
-            <input type="text" name="initial_draft" placeholder="Initial Draft (URL or file path)" required><br>
+            <input type="text" name="draft" placeholder="Initial Draft (URL or file path)" required><br>
             <input type="submit" value="Create Bill">
         </form>
     </div>

@@ -4,6 +4,7 @@ class DB
 {
     private $pdo;
 
+    private static $instance = null;
     // Constructor that initializes the database connection
     public function __construct()
     {
@@ -29,6 +30,15 @@ class DB
         }
     }
 
+    // Static method to get the instance of the DB class
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
+    }
     // Generalized query method to handle all queries (SELECT, INSERT, UPDATE, DELETE)
     public function query($sql, $params = [], $fetch = true)
     {

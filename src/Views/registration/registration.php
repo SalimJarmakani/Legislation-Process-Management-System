@@ -49,7 +49,7 @@
 <body>
     <div class="container">
         <h2>Register</h2>
-        <form action="<?= $GLOBALS["BASE_URL"] ?>register" method="POST">
+        <form action="<?= $GLOBALS["BASE_URL"] ?>login" method="POST">
             <input type="text" name="name" placeholder="name" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
@@ -60,7 +60,7 @@
                     <input type="radio" name="role" value="MP" required> MP
                 </label>
                 <label>
-                    <input type="radio" name="role" value="Admin" required> Admin
+                    <input type="radio" name="role" value="Administrator" required> Admin
                 </label>
                 <label>
                     <input type="radio" name="role" value="Reviewer" required> Reviewer

@@ -17,10 +17,14 @@ class Router
 
     public $routeList = [];
 
-    public function addRoute($route, $action, $controller)
+    public function addRoute($route, $action, $controller, $requestType = 'GET')
     {
 
-        $this->routeList[$route] = ["action" => $action, "controller" => $controller];
+        $this->routeList[$route] = [
+            "action" => $action,
+            "controller" => $controller,
+            'method' => $requestType
+        ];
     }
 
     public function routeLink($uri, $data = [])
@@ -32,11 +36,16 @@ class Router
             $action = $this->routeList[$uri]["action"];
             $controller = new $controller();
 
+            $method = $this->routeList[$uri]["method"];
 
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+            if ($_SERVER["REQUEST_METHOD"] ===  "POST" && $method === "POST") {
                 call_user_func_array([$controller, $action], $data);
-            } else {
+            } else if ($_SERVER["REQUEST_METHOD"] ===  "GET" && $method === "GET") {
                 $controller->$action($data);
+            } else {
+                $error = "Not a Valid Route";
+                include "Views/error/error.php";
             }
         } else {
             $error = "Not a Valid Route";

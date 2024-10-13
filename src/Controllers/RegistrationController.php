@@ -2,14 +2,18 @@
 
 require_once './BaseController.php';
 require_once './repositories/RegistrationRepository.php';
+require_once './repositories/UserRepository.php';
+
 
 class RegistrationController extends BaseController
 {
     private $repository;
+    private $userRepository;
 
     public function __construct()
     {
         $this->repository = new RegistrationRepository(); // Initialize repository
+        $this->userRepository = new UserRepository();
     }
 
     // Display the registration page
@@ -32,8 +36,12 @@ class RegistrationController extends BaseController
             return;
         }
 
-        $role = $this->repository->getRoleByEmailDB($email);
-        $_SESSION["Role"] = $role;
+        $user = $this->userRepository->getUserByEmail($email);
+
+        if ($user == null) header("Location: notFound");
+        $_SESSION["Role"] = $user->getRole();
+        $_SESSION["Email"] = $user->getEmail();
+        $_SESSION["Id"] = $user->getId();
         header("Location: MPDashboard");
     }
     // Handle registration logic
