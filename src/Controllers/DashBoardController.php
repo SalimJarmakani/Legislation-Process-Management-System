@@ -19,4 +19,12 @@ class DashBoardController extends BaseController
 
         $this->render("Dashboard/MP_Dashboard", ["bills" => $allBills]);
     }
+
+    public function reviewDashboard()
+    {
+
+        $allBills = $this->billRepository->getAllBills();
+
+        $this->render("Dashboard/Review_Dashboard", ["bills" => $allBills]);
+    }
 }

@@ -42,7 +42,18 @@ class RegistrationController extends BaseController
         $_SESSION["Role"] = $user->getRole();
         $_SESSION["Email"] = $user->getEmail();
         $_SESSION["Id"] = $user->getId();
-        header("Location: MPDashboard");
+
+        switch ($user->getRole()) {
+            case 'MP':
+                header("Location: MPDashboard");
+                break;
+
+            case 'Reviewer':
+                header("Location: Rev-Dashboard");
+                break;
+            default:
+                header("Location: notFound");
+        }
     }
     // Handle registration logic
     public function register($name, $email, $password, $role)

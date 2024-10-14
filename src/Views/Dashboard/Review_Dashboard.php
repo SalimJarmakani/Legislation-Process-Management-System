@@ -2,7 +2,7 @@
 
 $currentRole = $_SESSION["Role"];
 
-if ($currentRole != "Administrator" && $currentRole != "MP") {
+if ($currentRole != "Reviewer" && $currentRole != "MP") {
     header("Location: notFound");
 }
 
@@ -14,14 +14,13 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MP Dashboard</title>
+    <title>Reviewer Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #ffffff;
-            /* White background for the body */
         }
 
         .container {
@@ -89,19 +88,12 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
             margin: 5px 0;
             /* Slight margin between paragraphs */
         }
-
-        footer {
-            text-align: center;
-            margin: 20px 0;
-            color: #000000;
-            /* Black footer text */
-        }
     </style>
 </head>
 
 <body>
     <header>
-        <h1>Member of Parliament Dashboard</h1>
+        <h1>Reviewer Dashboard</h1>
     </header>
     <div class="container">
         <nav>
@@ -115,26 +107,37 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
                 <h3>Pending Bills</h3>
                 <?php if (!empty($bills)): ?>
                     <?php foreach ($bills as $bill): ?>
-                        <p><?php echo htmlspecialchars($bill->getTitle()) . " - CreationDate: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
+                        <p><?php echo htmlspecialchars($bill->getTitle()) . " - Creation Date: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <p>No pending bills available.</p>
                 <?php endif; ?>
             </div>
             <div class="section">
-                <h3>Voting Results</h3>
-                <p>Last Vote: Bill Title A - Your Vote: Yes - Result: Passed</p>
-                <p>Last Vote: Bill Title B - Your Vote: No - Result: Rejected</p>
+                <h3>Your Amendments</h3>
+                <?php if (!empty($amendments)): ?>
+                    <?php foreach ($amendments as $amendment): ?>
+                        <p><?php echo htmlspecialchars($amendment['comment']) . " - Created: " . htmlspecialchars($amendment['createdTime']) . " - Bill: " . htmlspecialchars($amendment['billName']); ?></p>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No amendments made so far.</p>
+                <?php endif; ?>
             </div>
             <div class="section">
-                <h3>Upcoming Sessions</h3>
-                <p>Next Session: 2024-10-15</p>
-                <p>Location: Parliament Hall, Room 202</p>
-            </div>
-            <div class="section">
-                <h3>Constituency Issues</h3>
-                <p>Issue 1: Concern about local infrastructure.</p>
-                <p>Issue 2: Request for more funding for education.</p>
+                <h3>Add Amendment</h3>
+                <form action="submitAmendment.php" method="POST">
+                    <label for="billSelect">Select Bill:</label>
+                    <select id="billSelect" name="billId">
+                        <?php foreach ($bills as $bill): ?>
+                            <option value="<?php echo htmlspecialchars($bill->getId()); ?>"><?php echo htmlspecialchars($bill->getTitle()); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <br><br>
+                    <label for="amendmentComment">Amendment Comment:</label>
+                    <textarea id="amendmentComment" name="comment" required></textarea>
+                    <br><br>
+                    <input type="submit" value="Submit Amendment" style="background: #ff0000; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">
+                </form>
             </div>
         </div>
     </div>

@@ -13,6 +13,8 @@ $router->addRoute("login", "login", RegistrationController::class, 'POST');
 $router->addRoute("MPDashboard", "MPDashboard", DashBoardController::class, 'GET');
 $router->addRoute("Bill/AddBill", "addBill", BillController::class, 'GET');
 $router->addRoute("Bill/CreateBill", "createBill", BillController::class, 'POST');
+$router->addRoute("Rev-Dashboard", "reviewDashboard", DashBoardController::class, 'GET');
+
 
 
 
