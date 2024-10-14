@@ -41,4 +41,22 @@ class BillController extends BaseController
             return "Error: " . $e->getMessage();
         }
     }
+
+    public function startBillVoting($billId)
+    {
+        $result = $this->billRepository->initiateBillVoting($billId);
+
+        $adminDashboardPath = $GLOBALS["BASE_URL"] . "AdminDashboard";
+
+        header("Location: $adminDashboardPath");
+    }
+
+    public function reviewBill($billData)
+    {
+
+        extract($billData);
+        $bill = $this->billRepository->getBillById($billId);
+
+        $this->render("Bill/reviewBill", ["bill" => $bill]);
+    }
 }

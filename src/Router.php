@@ -30,6 +30,8 @@ class Router
     public function routeLink($uri, $data = [])
     {
 
+
+
         if (array_key_exists($uri, $this->routeList)) {
 
             $controller = $this->routeList[$uri]["controller"];

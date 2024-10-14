@@ -6,7 +6,7 @@ require_once "./Models/Bill.php";
 class BillRepository
 {
 
-    private $dbContext;
+    private DB $dbContext;
 
 
     public function __construct()
@@ -48,6 +48,28 @@ class BillRepository
         return $result;
     }
 
+    public function getBillById($billId): Bill
+    {
+
+        $sql = "
+        SELECT b.*, u.username 
+        FROM bill b 
+        JOIN user u ON b.author_id = u.id
+        WHERE b.id = :billId";
+
+        $params = ["billId" => $billId];
+
+        $billData = $this->dbContext->query($sql, $params, true);
+
+
+        $bill = null;
+
+
+        if (!empty($billData)) $bill = Bill::GenerateBill($billData[0]); //get first element our Bill
+
+        return $bill;
+    }
+
     public function getAllBills()
     {
         // Prepare the SQL query to get all bills with associated usernames
@@ -71,5 +93,17 @@ class BillRepository
         }
 
         return $bills; // Return an array of bills with usernames
+    }
+
+    public function initiateBillVoting($billId)
+    {
+
+        $sql = "UPDATE bill SET status='Under Review' where id=:billId";
+
+        $params = ["billId" => $billId];
+
+        $result = $this->dbContext->query($sql, $params, false);
+
+        return $result;
     }
 }

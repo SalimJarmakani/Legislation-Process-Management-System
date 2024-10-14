@@ -42,18 +42,35 @@ class RegistrationController extends BaseController
         $_SESSION["Role"] = $user->getRole();
         $_SESSION["Email"] = $user->getEmail();
         $_SESSION["Id"] = $user->getId();
+        setcookie("LoggedIn", true, time() + (86400 * 30), "/");
 
-        switch ($user->getRole()) {
+
+        switch (trim($user->getRole())) {
             case 'MP':
                 header("Location: MPDashboard");
                 break;
-
             case 'Reviewer':
                 header("Location: Rev-Dashboard");
+                break;
+            case 'Administrator':
+                header("Location: AdminDashboard");
                 break;
             default:
                 header("Location: notFound");
         }
+    }
+
+    public function logOut()
+    {
+        //destroy session
+        session_destroy();
+
+        //remove logged In cookie
+
+        setcookie("loggedIn", "", time() - 3600);
+
+
+        include "./Views/registration/loggedOut.php";
     }
     // Handle registration logic
     public function register($name, $email, $password, $role)

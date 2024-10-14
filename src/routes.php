@@ -5,7 +5,7 @@ $router = new Router();
 $GLOBALS["BASE_URL"] = getBasePath();
 
 
-
+$router->addRoute("/", "index", HomeController::class, "GET");
 $router->addRoute("registration", "index", RegistrationController::class, 'GET');
 $router->addRoute("register", "register", RegistrationController::class, 'POST');
 $router->addRoute("loginPage", "loginPage", RegistrationController::class, 'GET');
@@ -14,9 +14,10 @@ $router->addRoute("MPDashboard", "MPDashboard", DashBoardController::class, 'GET
 $router->addRoute("Bill/AddBill", "addBill", BillController::class, 'GET');
 $router->addRoute("Bill/CreateBill", "createBill", BillController::class, 'POST');
 $router->addRoute("Rev-Dashboard", "reviewDashboard", DashBoardController::class, 'GET');
-
-
-
+$router->addRoute("LogOut", "logOut", RegistrationController::class, 'GET');
+$router->addRoute("AdminDashboard", "adminDashboard", DashBoardController::class, "GET");
+$router->addRoute("Bill/startBillVoting", "startBillVoting", BillController::class, 'POST');
+$router->addRoute("Bill/Review", "reviewBill", BillController::class, "GET");
 
 
 

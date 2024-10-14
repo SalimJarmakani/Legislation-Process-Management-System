@@ -24,6 +24,7 @@ class Bill
         $this->status = $status;
         $this->created_time = $created_time;
         $this->updated_time = $updated_time;
+        $this->userName = $userName;
     }
 
     // Getters
@@ -65,6 +66,11 @@ class Bill
     public function getUpdatedTime()
     {
         return $this->updated_time;
+    }
+
+    public function getUsername()
+    {
+        return $this->userName;
     }
 
     // Setters
