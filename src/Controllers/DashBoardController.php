@@ -1,14 +1,18 @@
 <?php
 require_once './BaseController.php';
 require_once './Repositories/BillRepository.php';
+require_once './Repositories/AmendmentRepository.php';
+
 class DashBoardController extends BaseController
 {
 
     private $billRepository;
+    private $amendmentRepository;
 
     public function __construct()
     {
         $this->billRepository = new BillRepository();
+        $this->amendmentRepository = new AmendmentRepository();
     }
 
     public function MPDashboard()
@@ -23,9 +27,15 @@ class DashBoardController extends BaseController
     public function reviewDashboard()
     {
 
-        $allBills = $this->billRepository->getAllBills();
+        try {
 
-        $this->render("Dashboard/Review_Dashboard", ["bills" => $allBills]);
+            $userId = $_SESSION["Id"];
+            $allBills = $this->billRepository->getAllBills();
+            $userAmendments = $this->amendmentRepository->getUserAmendments($userId);
+            $this->render("Dashboard/Review_Dashboard", ["bills" => $allBills, "amendments" => $userAmendments]);
+        } catch (Exception $e) {
+            $this->render("Dashboard/Review_Dashboard", ["error" => "Problem Getting Dashboard Data Please Refresh"]);
+        }
     }
 
     public function adminDashboard()

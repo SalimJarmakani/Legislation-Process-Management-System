@@ -2,13 +2,18 @@
 
 require_once './BaseController.php';
 require_once './repositories/BillRepository.php';
+require_once './repositories/AmendmentRepository.php';
+
 class BillController extends BaseController
 {
     private $billRepository;
+    private $amendmentRepository;
+
     public function __construct()
     {
 
         $this->billRepository = new BillRepository();
+        $this->amendmentRepository = new AmendmentRepository();
     }
 
     public function addBill()
@@ -57,6 +62,35 @@ class BillController extends BaseController
         extract($billData);
         $bill = $this->billRepository->getBillById($billId);
 
-        $this->render("Bill/reviewBill", ["bill" => $bill]);
+        $amendments = $this->amendmentRepository->getBillAmendments($billId);
+
+        $this->render("Bill/reviewBill", ["bill" => $bill, "amendments" => $amendments]);
+    }
+
+    public function voting($billData)
+    {
+
+        extract($billData);
+
+        $bill = $this->billRepository->getBillById($billId);
+
+        $this->render("Bill/voting", ["bill" => $bill]);
+    }
+
+    public function addAmendment($amendment, $comment, $billId)
+    {
+        try {
+            $authorId = $_SESSION["Id"];
+            $amendment = new Amendment(null, $billId, $authorId, $amendment, $comment, null, null);
+
+            $result = $this->billRepository->addAmendment($amendment);
+            $bill = $this->billRepository->getBillById($billId);
+            if ($result) {
+
+                $this->render("Bill/reviewBill", ["bill" => $bill, "error" => "error adding amendment please try again"]);
+            } else $this->render("Bill/reviewBill", ["bill" => $bill]);
+        } catch (Exception $ex) {
+            $this->render("Bill/reviewBill", ["bill" => $bill, "error" => "error adding amendment please try again"]);
+        }
     }
 }

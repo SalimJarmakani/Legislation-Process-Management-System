@@ -96,6 +96,31 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
             color: #000000;
             /* Black footer text */
         }
+
+        .bill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f8f8;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ff0000;
+            border-radius: 5px;
+        }
+
+        .bill-details {
+            flex: 1;
+        }
+
+        .vote-button {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -108,14 +133,22 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
             <a href="#">Home</a>
             <a href="#">Profile</a>
             <a href="Bill/AddBill">Add New Bill</a>
-            <a href="#">Logout</a>
+            <a href="LogOut">Logout</a>
         </nav>
         <div class="dashboard">
             <div class="section">
                 <h3>Pending Bills</h3>
                 <?php if (!empty($bills)): ?>
                     <?php foreach ($bills as $bill): ?>
-                        <p><?php echo htmlspecialchars($bill->getTitle()) . " - CreationDate: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
+                        <div class="bill-item">
+                            <div class="bill-details">
+                                <p><?php echo htmlspecialchars($bill->getTitle()) . " - Creation Date: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
+                                <form action="Bill/Voting" method="GET">
+                                    <input type="hidden" name="billId" value="<?php echo htmlspecialchars($bill->getId()); ?>">
+                                    <button type="submit" class="vote-button">Vote</button>
+                                </form>
+                            </div>
+                        </div>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <p>No pending bills available.</p>

@@ -18,7 +18,8 @@ $router->addRoute("LogOut", "logOut", RegistrationController::class, 'GET');
 $router->addRoute("AdminDashboard", "adminDashboard", DashBoardController::class, "GET");
 $router->addRoute("Bill/startBillVoting", "startBillVoting", BillController::class, 'POST');
 $router->addRoute("Bill/Review", "reviewBill", BillController::class, "GET");
-
+$router->addRoute("Bill/AddAmendment", "addAmendment", BillController::class, 'POST');
+$router->addRoute("Bill/Voting", "voting", BillController::class, "GET");
 
 
 return $router;

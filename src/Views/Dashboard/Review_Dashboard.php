@@ -2,8 +2,8 @@
 
 $currentRole = $_SESSION["Role"];
 
-if ($currentRole != "Reviewer" && $currentRole != "MP") {
-    header("Location: /notFound");
+if ($currentRole != "Reviewer") {
+    header("Location: notFound");
     exit(); // Ensure exit after header redirect
 }
 
@@ -121,6 +121,7 @@ if ($currentRole != "Reviewer" && $currentRole != "MP") {
         <h1>Reviewer Dashboard</h1>
     </header>
     <div class="container">
+        <h3 style="color:#ff0000"> <?= isset($error) ? $error : "" ?></h3>
         <nav>
             <a href="#">Home</a>
             <a href="#">Profile</a>
@@ -161,6 +162,27 @@ if ($currentRole != "Reviewer" && $currentRole != "MP") {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <p>No bills under review available.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <div class="section">
+                <h3>Your Amendments</h3>
+                <div class="bills-container">
+                    <?php if (!empty($amendments)): ?>
+                        <?php foreach ($amendments as $amendment): ?>
+                            <div class="bill">
+                                <p>
+                                    <?php echo "Amendment to: " . htmlspecialchars($amendment->getBillName()) .
+                                        " - Date: " . htmlspecialchars($amendment->getCreatedTime()); ?>
+                                </p>
+                                <p>
+                                    <?php echo "Amendment Details: " . htmlspecialchars($amendment->getAmendmentContent()); ?>
+                                </p>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <p>No amendments made yet.</p>
                     <?php endif; ?>
                 </div>
             </div>
