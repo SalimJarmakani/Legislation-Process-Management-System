@@ -1,13 +1,15 @@
 <?php
 
-$currentRole = $_SESSION["Role"];
+// Ensure the user role is set and valid
+$currentRole = isset($_SESSION["Role"]) ? $_SESSION["Role"] : null;
 
 if ($currentRole != "Reviewer" && $currentRole != "MP") {
     header("Location: /notFound");
     exit(); // Ensure exit after header redirect
 }
 
-
+// Include the reusable navbar
+include 'Views/layouts/NavBar.php';
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +26,6 @@ if ($currentRole != "Reviewer" && $currentRole != "MP") {
             padding: 0;
             background-color: #ffffff;
             font-size: 14px;
-            /* Smaller font size */
         }
 
         .container {
@@ -32,48 +33,37 @@ if ($currentRole != "Reviewer" && $currentRole != "MP") {
             margin: auto;
             overflow: hidden;
             padding: 15px;
-            /* Reduced padding */
         }
 
         h2 {
             color: #ff0000;
-            /* Red heading */
             font-size: 18px;
-            /* Smaller heading size */
         }
 
         .bill-info {
             background: #f8f8f8;
             border: 1px solid #ff0000;
-            /* Red border */
             border-radius: 5px;
             padding: 10px;
-            /* Reduced padding */
             margin-bottom: 15px;
-            /* Reduced margin */
         }
 
         .section {
             margin: 15px 0;
-            /* Reduced margin */
         }
 
         label {
             display: block;
             margin: 8px 0 4px;
-            /* Reduced margins */
         }
 
         textarea {
             width: 100%;
             height: 80px;
-            /* Reduced height */
             border-radius: 5px;
             border: 1px solid #ccc;
             padding: 8px;
-            /* Reduced padding */
             font-size: 12px;
-            /* Smaller text area font size */
         }
 
         input[type="submit"] {
@@ -81,45 +71,93 @@ if ($currentRole != "Reviewer" && $currentRole != "MP") {
             color: white;
             border: none;
             padding: 8px 12px;
-            /* Reduced padding */
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
-            /* Smaller button font size */
+        }
+
+        .vote-info {
+            background-color: #e8f5e9;
+            padding: 15px;
+            border: 2px solid #4caf50;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .vote-info:hover {
+            transform: scale(1.02);
+        }
+
+        .vote-info h4 {
+            margin: 0 0 5px 0;
+            color: #4caf50;
+        }
+
+        .vote-info p {
+            margin: 5px 0;
+            color: #333;
+        }
+
+        .vote-info .timestamp {
+            font-size: 12px;
+            color: #666;
         }
     </style>
 </head>
 
 <body>
+    <!-- Container after the navbar -->
     <div class="container">
         <h3 style="color: #ff0000;"><?= isset($error) ? $error : "" ?></h3>
         <h2>Bill Information</h2>
         <div class="bill-info">
             <p><strong>Title:</strong> <?php echo htmlspecialchars($bill->getTitle()); ?></p>
             <p><strong>Description:</strong> <?php echo htmlspecialchars($bill->getDescription()); ?></p>
-            <p><strong>Author:</strong> <?php echo htmlspecialchars($bill->getUsername()); ?></p> <!-- You may want to fetch username from user table -->
+            <p><strong>Author:</strong> <?php echo htmlspecialchars($bill->getUsername()); ?></p>
             <p><strong>Status:</strong> <?php echo htmlspecialchars($bill->getStatus()); ?></p>
             <p><strong>Created Time:</strong> <?php echo htmlspecialchars($bill->getCreatedTime()); ?></p>
             <p><strong>Updated Time:</strong> <?php echo htmlspecialchars($bill->getUpdatedTime()); ?></p>
         </div>
+
+        <div class="section">
+            <h3>Votes</h3>
+
+            <?php if (!empty($votes)): ?>
+                <?php foreach ($votes as $vote): ?>
+                    <div class="vote-info">
+                        <h4>Vote by: <?php echo htmlspecialchars($vote->getMpName()); ?></h4>
+                        <p><strong>Vote:</strong> <?php echo htmlspecialchars($vote->getVoteValue()); ?></p>
+                        <p class="timestamp"><strong>Created Time:</strong> <?php echo htmlspecialchars($vote->getCreatedTime()); ?></p>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No votes have been recorded for this bill yet.</p>
+            <?php endif; ?>
+        </div>
+
+        <!-- Bill Amendments Section -->
         <div class="section">
             <h3>Bill Amendments</h3>
             <div class="amendments-container">
                 <?php if (!empty($amendments)): ?>
                     <?php foreach ($amendments as $amendment): ?>
                         <div class="amendment">
-                            <p><strong>Amendment by:</strong> <?php echo htmlspecialchars($amendment->getAuthorName()); ?></p> <!-- Assuming getAuthorName() returns the name of the author -->
+                            <p><strong>Amendment by:</strong> <?php echo htmlspecialchars($amendment->getAuthorName()); ?></p>
                             <p><strong>Date:</strong> <?php echo htmlspecialchars($amendment->getCreatedTime()); ?></p>
                             <p><strong>Amendment:</strong> <?php echo htmlspecialchars($amendment->getAmendmentContent()); ?></p>
                             <p><strong>Comment:</strong> <?php echo htmlspecialchars($amendment->getComment()); ?></p>
+                            <hr style="border: 1px solid #ff0000;">
                         </div>
-                        <hr style="border: 1px solid #ff0000;">
                     <?php endforeach; ?>
                 <?php else: ?>
                     <p>No amendments have been made for this bill.</p>
                 <?php endif; ?>
             </div>
         </div>
+
+        <!-- Add Amendment and Comment Section -->
         <div class="section">
             <h3>Add Amendment</h3>
             <form action="AddAmendment" method="POST">
@@ -131,11 +169,9 @@ if ($currentRole != "Reviewer" && $currentRole != "MP") {
                 <textarea id="comment" name="comment" required></textarea>
 
                 <input type="hidden" name="billId" value="<?php echo htmlspecialchars($bill->getId()); ?>">
-                <input type="submit" value="Submit Amendment and Comment">
+                <input type="submit" value="Submit Amendment and Comment" style="margin-top: 20px;">
             </form>
         </div>
-
-
     </div>
 </body>
 

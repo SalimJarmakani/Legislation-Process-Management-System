@@ -57,7 +57,9 @@ class DB
             // For non-fetch queries (INSERT, UPDATE, DELETE), return true if successful
             return true;
         } catch (PDOException $e) {
-            die("Query failed: " . $e->getMessage());
+
+            return false;
+            //die("Query failed: " . $e->getMessage());
         }
     }
 

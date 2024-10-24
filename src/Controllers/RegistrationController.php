@@ -26,7 +26,7 @@ class RegistrationController extends BaseController
     {
         $this->render('registration/login');
     }
-    public function login($email, $password)
+    public function login($email, $password, $remember = false)
     {
 
         $valid = $this->repository->validateCredentialsDB($email, $password);
@@ -42,8 +42,18 @@ class RegistrationController extends BaseController
         $_SESSION["Role"] = $user->getRole();
         $_SESSION["Email"] = $user->getEmail();
         $_SESSION["Id"] = $user->getId();
-        setcookie("LoggedIn", true, time() + (86400 * 30), "/");
-
+        if ($remember) {
+            setcookie("LoggedIn", true, time() + (86400 * 30), "/");
+            setcookie("Email", $user->getEmail(), time() + (86400 * 30), "/");
+        } else {
+            // Unset cookies if 'Remember Me' is not checked
+            if (isset($_COOKIE["LoggedIn"])) {
+                setcookie("LoggedIn", "", time() - 3600, "/"); // Expire the cookie by setting a past time
+            }
+            if (isset($_COOKIE["Email"])) {
+                setcookie("Email", "", time() - 3600, "/"); // Expire the cookie by setting a past time
+            }
+        }
 
         switch (trim($user->getRole())) {
             case 'MP':
@@ -66,8 +76,6 @@ class RegistrationController extends BaseController
         session_destroy();
 
         //remove logged In cookie
-
-        setcookie("loggedIn", "", time() - 3600);
 
 
         include "./Views/registration/loggedOut.php";

@@ -4,6 +4,7 @@ $currentRole = $_SESSION["Role"];
 
 if ($currentRole != "Administrator" && $currentRole != "MP") {
     header("Location: notFound");
+    exit();
 }
 
 ?>
@@ -21,7 +22,6 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
             margin: 0;
             padding: 0;
             background-color: #ffffff;
-            /* White background for the body */
         }
 
         .container {
@@ -32,9 +32,7 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
 
         header {
             background: #ff0000;
-            /* Red header */
             color: #ffffff;
-            /* White text */
             padding: 10px 0;
             text-align: center;
         }
@@ -46,22 +44,18 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
         nav a {
             margin: 0 15px;
             color: #ff0000;
-            /* Red links */
             text-decoration: none;
         }
 
         .dashboard {
             background: #ffffff;
-            /* White dashboard background */
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 0 10px #000000;
-            /* Black shadow */
         }
 
         h2 {
             color: #ff0000;
-            /* Red headings */
         }
 
         .section {
@@ -70,31 +64,9 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
 
         .section h3 {
             background: #ff0000;
-            /* Red section headers */
             color: #ffffff;
-            /* White text */
             padding: 10px;
             border-radius: 5px;
-        }
-
-        .section p {
-            background: #ffffff;
-            /* White background for details */
-            color: #ff0000;
-            /* Red text for details */
-            padding: 10px;
-            border: 1px solid #ff0000;
-            /* Red border for emphasis */
-            border-radius: 5px;
-            margin: 5px 0;
-            /* Slight margin between paragraphs */
-        }
-
-        footer {
-            text-align: center;
-            margin: 20px 0;
-            color: #000000;
-            /* Black footer text */
         }
 
         .bill-item {
@@ -121,6 +93,12 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
             cursor: pointer;
             font-size: 14px;
         }
+
+        footer {
+            text-align: center;
+            margin: 20px 0;
+            color: #000000;
+        }
     </style>
 </head>
 
@@ -136,10 +114,40 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
             <a href="LogOut">Logout</a>
         </nav>
         <div class="dashboard">
+
+            <!-- Pending Bills Section -->
             <div class="section">
                 <h3>Pending Bills</h3>
-                <?php if (!empty($bills)): ?>
-                    <?php foreach ($bills as $bill): ?>
+                <?php
+                // Filter bills that are in 'Draft' status
+                $pendingBills = array_filter($bills, function ($bill) {
+                    return $bill->getStatus() === 'Draft';
+                });
+                ?>
+                <?php if (!empty($pendingBills)): ?>
+                    <?php foreach ($pendingBills as $bill): ?>
+                        <div class="bill-item">
+                            <div class="bill-details">
+                                <p><?php echo htmlspecialchars($bill->getTitle()) . " - Creation Date: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No pending bills available.</p>
+                <?php endif; ?>
+            </div>
+
+            <!-- Under Review Bills Section -->
+            <div class="section">
+                <h3>Under Review Bills</h3>
+                <?php
+                // Filter bills that are in 'Under Review' status
+                $underReviewBills = array_filter($bills, function ($bill) {
+                    return $bill->getStatus() === 'Under Review';
+                });
+                ?>
+                <?php if (!empty($underReviewBills)): ?>
+                    <?php foreach ($underReviewBills as $bill): ?>
                         <div class="bill-item">
                             <div class="bill-details">
                                 <p><?php echo htmlspecialchars($bill->getTitle()) . " - Creation Date: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
@@ -151,24 +159,31 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
-                    <p>No pending bills available.</p>
+                    <p>No bills under review.</p>
                 <?php endif; ?>
             </div>
+
+            <!-- Voting Results Section -->
             <div class="section">
                 <h3>Voting Results</h3>
                 <p>Last Vote: Bill Title A - Your Vote: Yes - Result: Passed</p>
                 <p>Last Vote: Bill Title B - Your Vote: No - Result: Rejected</p>
             </div>
+
+            <!-- Upcoming Sessions Section -->
             <div class="section">
                 <h3>Upcoming Sessions</h3>
                 <p>Next Session: 2024-10-15</p>
                 <p>Location: Parliament Hall, Room 202</p>
             </div>
+
+            <!-- Constituency Issues Section -->
             <div class="section">
                 <h3>Constituency Issues</h3>
                 <p>Issue 1: Concern about local infrastructure.</p>
                 <p>Issue 2: Request for more funding for education.</p>
             </div>
+
         </div>
     </div>
     <footer>

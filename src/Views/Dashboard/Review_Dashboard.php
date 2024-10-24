@@ -113,6 +113,47 @@ if ($currentRole != "Reviewer") {
             /* Smaller font */
             margin-top: 10px;
         }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Black background with opacity */
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 300px;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .modal button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal .ok-btn {
+            background-color: #ff0000;
+            color: white;
+        }
+
+        .modal .cancel-btn {
+            background-color: #888;
+            color: white;
+        }
     </style>
 </head>
 
@@ -126,9 +167,20 @@ if ($currentRole != "Reviewer") {
             <a href="#">Home</a>
             <a href="#">Profile</a>
             <a href="Bill/AddBill">Add New Bill</a>
-            <a href="LogOut">Logout</a>
+            <a href="#" id="logout-btn">Logout</a> <!-- Modified to trigger the modal -->
         </nav>
+
+        <!-- The Logout Confirmation Modal -->
+        <div id="logout-modal" class="modal">
+            <div class="modal-content">
+                <p>Are you sure you want to log out?</p>
+                <button id="confirm-logout" class="ok-btn">OK</button>
+                <button id="cancel-logout" class="cancel-btn">Cancel</button>
+            </div>
+        </div>
+
         <div class="dashboard">
+            <!-- Pending Bills Section -->
             <div class="section">
                 <h3>Pending Bills</h3>
                 <div class="bills-container">
@@ -145,6 +197,8 @@ if ($currentRole != "Reviewer") {
                     <?php endif; ?>
                 </div>
             </div>
+
+            <!-- Bills Under Review Section -->
             <div class="section">
                 <h3>Bills Under Review</h3>
                 <div class="bills-container">
@@ -166,6 +220,7 @@ if ($currentRole != "Reviewer") {
                 </div>
             </div>
 
+            <!-- Your Amendments Section -->
             <div class="section">
                 <h3>Your Amendments</h3>
                 <div class="bills-container">
@@ -191,6 +246,37 @@ if ($currentRole != "Reviewer") {
     <footer>
         <p>&copy; 2024 Parliament System</p>
     </footer>
+
+    <script>
+        // Get elements
+        const logoutBtn = document.getElementById("logout-btn");
+        const modal = document.getElementById("logout-modal");
+        const confirmLogout = document.getElementById("confirm-logout");
+        const cancelLogout = document.getElementById("cancel-logout");
+
+        // Show modal when logout is clicked
+        logoutBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            modal.style.display = "block";
+        });
+
+        // If "OK" is clicked, redirect to logout
+        confirmLogout.addEventListener("click", function() {
+            window.location.href = "LogOut";
+        });
+
+        // If "Cancel" is clicked, hide the modal
+        cancelLogout.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+
+        // Close the modal if the user clicks outside of it
+        window.addEventListener("click", function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        });
+    </script>
 </body>
 
 </html>

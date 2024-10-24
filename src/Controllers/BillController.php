@@ -3,78 +3,81 @@
 require_once './BaseController.php';
 require_once './repositories/BillRepository.php';
 require_once './repositories/AmendmentRepository.php';
+require_once './repositories/VoteRepository.php';
+
 
 class BillController extends BaseController
 {
     private $billRepository;
     private $amendmentRepository;
+    private $voteRepository;
 
     public function __construct()
     {
-
         $this->billRepository = new BillRepository();
         $this->amendmentRepository = new AmendmentRepository();
+        $this->voteRepository = new VoteRepository();
+    }
+
+    // Standardized method to get parameters for rendering pages
+    private function getBillPageParams($billId)
+    {
+        $bill = $this->billRepository->getBillById($billId);
+        $amendments = $this->amendmentRepository->getBillAmendments($billId);
+        $votes = $this->voteRepository->getVotes($billId);
+
+        return [
+            "bill" => $bill,
+            "amendments" => $amendments,
+            "votes" => $votes,
+        ];
     }
 
     public function addBill()
     {
-
         $this->render("Bill/new_bill");
     }
 
     public function createBill($title, $description, $draft)
     {
-
         $authorId = $_SESSION["Id"];
-
         if (!isset($authorId)) throw new Error("Please Login and Try Again");
-        // Create an instance of the Bill class
+
         $bill = new Bill(null, $title, $description, $authorId, $draft, "Draft", null, null);
-        // Call the CreateBill method from BillRepository
+
         try {
             $result = $this->billRepository->CreateBill($bill);
-
             if ($result) {
-                // Bill created successfully
                 return "Bill created successfully.";
             } else {
-                // Handle failure to create bill
                 return "Failed to create the bill.";
             }
         } catch (Exception $e) {
-            // Handle exception
             return "Error: " . $e->getMessage();
         }
     }
 
     public function startBillVoting($billId)
     {
-        $result = $this->billRepository->initiateBillVoting($billId);
-
+        $this->billRepository->initiateBillVoting($billId);
         $adminDashboardPath = $GLOBALS["BASE_URL"] . "AdminDashboard";
-
         header("Location: $adminDashboardPath");
     }
 
     public function reviewBill($billData)
     {
-
         extract($billData);
-        $bill = $this->billRepository->getBillById($billId);
+        $params = $this->getBillPageParams($billId); // Using the standardized method
 
-        $amendments = $this->amendmentRepository->getBillAmendments($billId);
 
-        $this->render("Bill/reviewBill", ["bill" => $bill, "amendments" => $amendments]);
+        $this->render("Bill/reviewBill", $params);
     }
 
     public function voting($billData)
     {
-
         extract($billData);
-
-        $bill = $this->billRepository->getBillById($billId);
-
-        $this->render("Bill/voting", ["bill" => $bill]);
+        $params = $this->getBillPageParams($billId); // Using the standardized method
+        $this->render("Bill/voting", $params);
     }
 
     public function addAmendment($amendment, $comment, $billId)
@@ -84,13 +87,34 @@ class BillController extends BaseController
             $amendment = new Amendment(null, $billId, $authorId, $amendment, $comment, null, null);
 
             $result = $this->billRepository->addAmendment($amendment);
-            $bill = $this->billRepository->getBillById($billId);
-            if ($result) {
 
-                $this->render("Bill/reviewBill", ["bill" => $bill, "error" => "error adding amendment please try again"]);
-            } else $this->render("Bill/reviewBill", ["bill" => $bill]);
+            $params = $this->getBillPageParams($billId); // Using the standardized method
+
+            if ($result == false) {
+                $params["error"] = "Error adding amendment, please try again.";
+            }
+
+            $this->render("Bill/reviewBill", $params);
         } catch (Exception $ex) {
-            $this->render("Bill/reviewBill", ["bill" => $bill, "error" => "error adding amendment please try again"]);
+            $params = $this->getBillPageParams($billId);
+            $params["error"] = "Error adding amendment, please try again.";
+            $this->render("Bill/reviewBill", $params);
         }
+    }
+
+    public function submitVote($vote, $billId)
+    {
+        $mpId = $_SESSION["Id"];
+        $currentTime = date('Y-m-d H:i:s');
+        $vote = new Vote(null, $billId, $mpId, $vote, $currentTime, null);
+
+        $result = $this->voteRepository->addVote($vote);
+        $params = $this->getBillPageParams($billId); // Using the standardized method
+
+        if (!$result) {
+            $params["error"] = "Unable to add vote check if you have already Voted.";
+        }
+
+        $this->render("Bill/voting", $params);
     }
 }

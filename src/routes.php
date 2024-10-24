@@ -20,6 +20,8 @@ $router->addRoute("Bill/startBillVoting", "startBillVoting", BillController::cla
 $router->addRoute("Bill/Review", "reviewBill", BillController::class, "GET");
 $router->addRoute("Bill/AddAmendment", "addAmendment", BillController::class, 'POST');
 $router->addRoute("Bill/Voting", "voting", BillController::class, "GET");
+$router->addRoute("Bill/SubmitVote", "submitVote", BillController::class, "POST");
+
 
 
 return $router;
