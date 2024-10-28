@@ -1,7 +1,7 @@
 <?php
 
-require_once './BaseController.php';
-include './Models/User.php';
+require_once __DIR__ . '/../BaseController.php';
+include __DIR__ . '/../Models/User.php';
 
 class UserController extends BaseController
 {

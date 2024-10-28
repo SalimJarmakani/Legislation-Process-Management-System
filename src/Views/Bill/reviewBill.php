@@ -9,7 +9,7 @@ if ($currentRole != "Reviewer" && $currentRole != "MP") {
 }
 
 // Include the reusable navbar
-include 'Views/layouts/NavBar.php';
+require_once __DIR__ . '/../../Views/layouts/NavBar.php';
 ?>
 
 <!DOCTYPE html>

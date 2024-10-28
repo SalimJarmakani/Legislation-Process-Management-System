@@ -1,8 +1,8 @@
 <?php
 
-require_once './BaseController.php';
-require_once './repositories/RegistrationRepository.php';
-require_once './repositories/UserRepository.php';
+require_once __DIR__ . '/../BaseController.php';
+require_once __DIR__ . '/../Repositories/RegistrationRepository.php';
+require_once __DIR__ . '/../Repositories/UserRepository.php';
 
 
 class RegistrationController extends BaseController
@@ -75,7 +75,7 @@ class RegistrationController extends BaseController
         //destroy session
         session_destroy();
 
-        include "./Views/registration/loggedOut.php";
+        include __DIR__ . "/../Views/registration/loggedOut.php";
     }
     // Handle registration logic
     public function register($name, $email, $password, $role)
@@ -95,6 +95,6 @@ class RegistrationController extends BaseController
         // Register the user
         $this->repository->registerUserDB($name, $email, $password, $role);
 
-        include "./Views/registration/login.php";
+        include __DIR__ . "/../Views/registration/login.php";
     }
 }

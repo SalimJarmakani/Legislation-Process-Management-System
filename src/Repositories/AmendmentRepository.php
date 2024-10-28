@@ -1,8 +1,8 @@
 <?php
 
-require_once "./DB/DB.php";
-require_once "./Models/Bill.php";
-require_once "./Models/Amendment.php";
+require_once __DIR__ . "/../DB/DB.php";
+require_once __DIR__ . "/../Models/Bill.php";
+require_once __DIR__ . "/../Models/Amendment.php";
 
 
 class AmendmentRepository

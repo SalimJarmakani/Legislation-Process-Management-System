@@ -1,7 +1,7 @@
 <?php
 
-require_once "./DB/DB.php";
-require_once "./Models/Vote.php";
+require_once __DIR__ . "/../DB/DB.php";
+require_once __DIR__ . "/../Models/Vote.php";
 
 
 class VoteRepository

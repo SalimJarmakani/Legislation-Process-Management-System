@@ -1,7 +1,9 @@
 <?php
 
 //get notifications 
-require_once "././Repositories/NotificationRepository.php";
+require_once __DIR__ . "/../../Repositories/NotificationRepository.php";
+
+
 $notiRepo = new NotificationRepository();
 $notifications = $notiRepo->getAllNotificationsForUser($_SESSION["Id"]);
 

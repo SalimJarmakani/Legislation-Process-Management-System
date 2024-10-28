@@ -5,12 +5,12 @@
 */
 
 
-$files = glob("./Controllers/*.*"); // Use *.* to match all files
+$files = glob(__DIR__ . "/Controllers/*.*"); // Use *.* to match all files
 
 foreach ($files as $file) {
     include_once $file; // Or require $file
 }
-include_once "helpers.php";
+include_once __DIR__ . "/helpers.php";
 
 class Router
 {
@@ -47,11 +47,11 @@ class Router
                 $controller->$action($data);
             } else {
                 $error = "Not a Valid Route";
-                include "Views/error/error.php";
+                include __DIR__ . "/Views/error/error.php";
             }
         } else {
             $error = "Not a Valid Route";
-            include "Views/error/error.php";
+            include __DIR__ . "/Views/error/error.php";
         }
     }
 }

@@ -1,4 +1,4 @@
-<?php require_once 'Views/layouts/NavBar.php'; ?>
+<?php require_once __DIR__ . '/../../Views/layouts/NavBar.php'; ?>
 
 <?php
 

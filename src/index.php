@@ -2,8 +2,8 @@
 session_start();
 
 
-include_once "./helpers.php";
-$router = include "./routes.php";
+include_once __DIR__ . "/helpers.php";
+$router = include __DIR__ . "/routes.php";
 
 $uri = $_SERVER['REQUEST_URI'];
 $pathData = getPath($uri);

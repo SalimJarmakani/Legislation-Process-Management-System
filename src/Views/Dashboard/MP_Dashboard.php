@@ -1,13 +1,15 @@
 <?php
-require_once "././Repositories/NotificationRepository.php";
-$notiRepo = new NotificationRepository();
-$notifications = $notiRepo->getAllNotificationsForUser($_SESSION["Id"]);
-$currentRole = $_SESSION["Role"];
+require_once __DIR__ . "/../../Repositories/NotificationRepository.php";
+
+$currentRole = isset($_SESSION["Role"]) ? $_SESSION["Role"] : "";
 
 if ($currentRole != "Administrator" && $currentRole != "MP") {
     header("Location: notFound");
     exit();
 }
+$notiRepo = new NotificationRepository();
+$notifications = $notiRepo->getAllNotificationsForUser($_SESSION["Id"]);
+
 
 ?>
 

@@ -1,9 +1,9 @@
 <?php
 
-require_once  'BaseController.php';
-require_once __DIR__ . '/../repositories/BillRepository.php';
-require_once __DIR__ . '/../repositories/AmendmentRepository.php';
-require_once __DIR__ . '/../repositories/VoteRepository.php';
+require_once  __DIR__ . '/../BaseController.php';
+require_once __DIR__ . '/../Repositories/BillRepository.php';
+require_once __DIR__ . '/../Repositories/AmendmentRepository.php';
+require_once __DIR__ . '/../Repositories/VoteRepository.php';
 
 
 class BillController extends BaseController
@@ -50,9 +50,9 @@ class BillController extends BaseController
         try {
             $result = $this->billRepository->CreateBill($bill);
             if ($result) {
-                return "Bill created successfully.";
+                $this->render("Bill/new_bill", ["message" => "Created Bill Successfully"]);
             } else {
-                return "Failed to create the bill.";
+                $this->render("Bill/new_bill", ["message" => "Failed to Create Bill"]);
             }
         } catch (Exception $e) {
             return "Error: " . $e->getMessage();

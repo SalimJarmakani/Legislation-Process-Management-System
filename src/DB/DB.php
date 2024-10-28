@@ -9,7 +9,7 @@ class DB
     public function __construct()
     {
         // Load the config file
-        $config = require __DIR__ . '/config.php';
+        $config = require __DIR__ . '/dockerConfig.php';
 
         // Get the database connection info from the config array
         $host     = $config['DB_HOST'];
@@ -58,8 +58,8 @@ class DB
             return true;
         } catch (PDOException $e) {
 
-            return false;
-            //die("Query failed: " . $e->getMessage());
+
+            die("Query failed: " . $e->getMessage());
         }
     }
 

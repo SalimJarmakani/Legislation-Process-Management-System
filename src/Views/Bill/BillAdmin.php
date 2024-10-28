@@ -7,7 +7,7 @@ if ($currentRole != "Administrator") {
 }
 
 // Include the reusable navbar
-include 'Views/layouts/NavBar.php';
+include __DIR__ . '/../../Views/layouts/NavBar.php';
 ?>
 
 <!DOCTYPE html>

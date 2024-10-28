@@ -1,5 +1,5 @@
 <?php
-require_once './BaseController.php';
+require_once __DIR__ . '/../BaseController.php';
 class HomeController extends BaseController
 {
 
@@ -12,9 +12,9 @@ class HomeController extends BaseController
         //if user is not loggedIn 
         if (!isset($isLoggedIn) || !$isLoggedIn) header("Location: loginPage");
 
-
+        $Role = isset($_SESSION["Role"]) ? $_SESSION["Role"] : "";
         //if user is already logged in redirect them to their appropriate Dashboard
-        switch ($_SESSION["Role"]) {
+        switch ($Role) {
             case 'MP':
                 header("Location: MPDashboard");
                 break;
