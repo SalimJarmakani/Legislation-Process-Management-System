@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  php-apache:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - mysql-db
+
+  mysql-db:
+    build:
+      context: .
+      dockerfile: DockerFile-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword # Set root password only
+      MYSQL_DATABASE: legislation
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql-scripts:/docker-entrypoint-initdb.d
+
+volumes:
+  mysql_data:

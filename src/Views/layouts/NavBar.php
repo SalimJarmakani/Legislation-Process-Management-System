@@ -1,6 +1,7 @@
 <?php
-session_start();
-
+require_once "././Repositories/NotificationRepository.php";
+$notiRepo = new NotificationRepository();
+$notifications = $notiRepo->getAllNotificationsForUser($_SESSION["Id"]);
 // Ensure the user role is set
 $currentRole = isset($_SESSION["Role"]) ? $_SESSION["Role"] : null;
 
@@ -9,6 +10,9 @@ if ($currentRole == "MP") {
     $homeURL = "MPDashboard"; // Redirect to MP dashboard
 } elseif ($currentRole == "Reviewer") {
     $homeURL = "Rev-Dashboard"; // Redirect to Reviewer dashboard
+
+} elseif ($currentRole == "Administrator") {
+    $homeURL = "AdminDashboard";
 } else {
     // Redirect to a default or not authorized page if role is missing/invalid
     header("Location: notFound.php");
@@ -22,7 +26,8 @@ if ($currentRole == "MP") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App Bar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,7 +43,6 @@ if ($currentRole == "MP") {
             background-color: #ff0000;
             color: #ffffff;
             padding: 10px 20px;
-            position: fixed;
             width: 98%;
             top: 0;
             z-index: 1000;
@@ -121,6 +125,18 @@ if ($currentRole == "MP") {
         .content {
             margin-top: 60px;
         }
+
+        /* Notification dropdown content */
+        .dropdown-menu {
+            max-height: 300px;
+            overflow-y: auto;
+            width: 300px;
+        }
+
+        .dropdown-item.unread {
+            background-color: #f9f9f9;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -129,6 +145,22 @@ if ($currentRole == "MP") {
     <div class="app-bar">
         <button class="back-button" onclick="goBack()">Back</button>
         <button class="home-button" onclick="goHome()">Home</button>
+        <!-- Notification Dropdown using Bootstrap -->
+        <div class="dropdown">
+            <button class="btn dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                🔔 Notifications
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                <?php foreach ($notifications as $notification) : ?>
+                    <li>
+                        <a class="dropdown-item <?php echo $notification->getIsRead() ? '' : 'unread'; ?>" href="#">
+                            <p class="mb-1"><?php echo htmlspecialchars($notification->getMessage()); ?></p>
+                            <small class="text-muted"><?php echo date("Y-m-d H:i", strtotime($notification->getCreatedTime())); ?></small>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
         <button class="logout-button" onclick="showLogoutModal()">Logout</button>
     </div>
 
@@ -140,7 +172,7 @@ if ($currentRole == "MP") {
             <button onclick="closeLogoutModal()">Cancel</button>
         </div>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function goBack() {
             window.history.back();

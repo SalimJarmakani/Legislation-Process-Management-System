@@ -144,6 +144,10 @@ switch (trim($Role)) {
                 <label for="remember">Remember Me</label>
             </div>
 
+            <div style="margin-top:5px; margin-bottom:15px">
+                <a href="registration">Don't have an account, click here to register</a>
+            </div>
+
             <input type="submit" value="Login">
         </form>
 

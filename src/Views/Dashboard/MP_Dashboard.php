@@ -1,5 +1,7 @@
 <?php
-
+require_once "././Repositories/NotificationRepository.php";
+$notiRepo = new NotificationRepository();
+$notifications = $notiRepo->getAllNotificationsForUser($_SESSION["Id"]);
 $currentRole = $_SESSION["Role"];
 
 if ($currentRole != "Administrator" && $currentRole != "MP") {
@@ -15,6 +17,7 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>MP Dashboard</title>
     <style>
         body {
@@ -84,7 +87,12 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
             flex: 1;
         }
 
-        .vote-button {
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-button {
             background-color: #ff0000;
             color: white;
             border: none;
@@ -99,6 +107,50 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
             margin: 20px 0;
             color: #000000;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            /* Could be more or less, depending on screen size */
+            text-align: center;
+        }
+
+        .close-button {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -109,9 +161,23 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
     <div class="container">
         <nav>
             <a href="#">Home</a>
-            <a href="#">Profile</a>
             <a href="Bill/AddBill">Add New Bill</a>
-            <a href="LogOut">Logout</a>
+            <button id="logoutButton" class="action-button">Logout</button> <!-- Styled Logout Button -->
+            <div class="dropdown">
+                <button class="btn dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    🔔 Notifications
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                    <?php foreach ($notifications as $notification) : ?>
+                        <li>
+                            <a class="dropdown-item <?php echo $notification->getIsRead() ? '' : 'unread'; ?>" href="#">
+                                <p class="mb-1"><?php echo htmlspecialchars($notification->getMessage()); ?></p>
+                                <small class="text-muted"><?php echo date("Y-m-d H:i", strtotime($notification->getCreatedTime())); ?></small>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
         </nav>
         <div class="dashboard">
 
@@ -129,6 +195,12 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
                         <div class="bill-item">
                             <div class="bill-details">
                                 <p><?php echo htmlspecialchars($bill->getTitle()) . " - Creation Date: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
+                            </div>
+                            <div class="button-container">
+                                <form action="Bill/EditBill" method="GET">
+                                    <input type="hidden" name="billId" value="<?php echo htmlspecialchars($bill->getId()); ?>">
+                                    <button type="submit" class="action-button">View/Edit</button>
+                                </form>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -153,7 +225,7 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
                                 <p><?php echo htmlspecialchars($bill->getTitle()) . " - Creation Date: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
                                 <form action="Bill/Voting" method="GET">
                                     <input type="hidden" name="billId" value="<?php echo htmlspecialchars($bill->getId()); ?>">
-                                    <button type="submit" class="vote-button">Vote</button>
+                                    <button type="submit" class="action-button">Vote</button>
                                 </form>
                             </div>
                         </div>
@@ -163,25 +235,48 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
                 <?php endif; ?>
             </div>
 
-            <!-- Voting Results Section -->
+            <!-- Accepted Bills Section -->
             <div class="section">
-                <h3>Voting Results</h3>
-                <p>Last Vote: Bill Title A - Your Vote: Yes - Result: Passed</p>
-                <p>Last Vote: Bill Title B - Your Vote: No - Result: Rejected</p>
+                <h3>Approved Bills</h3>
+                <?php
+                // Filter bills that are in 'Accepted' status
+                $acceptedBills = array_filter($bills, function ($bill) {
+                    return $bill->getStatus() === 'Approved';
+                });
+                ?>
+                <?php if (!empty($acceptedBills)): ?>
+                    <?php foreach ($acceptedBills as $bill): ?>
+                        <div class="bill-item">
+                            <div class="bill-details">
+                                <p><?php echo htmlspecialchars($bill->getTitle()) . " - Created by: " . htmlspecialchars($bill->getUsername()) . " - Creation Date: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No accepted bills available.</p>
+                <?php endif; ?>
             </div>
 
-            <!-- Upcoming Sessions Section -->
+            <!-- Rejected Bills Section -->
             <div class="section">
-                <h3>Upcoming Sessions</h3>
-                <p>Next Session: 2024-10-15</p>
-                <p>Location: Parliament Hall, Room 202</p>
-            </div>
-
-            <!-- Constituency Issues Section -->
-            <div class="section">
-                <h3>Constituency Issues</h3>
-                <p>Issue 1: Concern about local infrastructure.</p>
-                <p>Issue 2: Request for more funding for education.</p>
+                <h3>Rejected Bills</h3>
+                <?php
+                // Filter bills that are in 'Rejected' status
+                $rejectedBills = array_filter($bills, function ($bill) {
+                    return $bill->getStatus() === 'Rejected';
+                });
+                ?>
+                <?php if (!empty($rejectedBills)): ?>
+                    <?php foreach ($rejectedBills as $bill): ?>
+                        <div class="bill-item">
+                            <div class="bill-details">
+                                <p><?php echo htmlspecialchars($bill->getTitle()) . " - Created by: " . htmlspecialchars($bill->getUsername()) . " - Creation Date: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No rejected bills available.</p>
+                <?php endif; ?>
             </div>
 
         </div>
@@ -189,6 +284,54 @@ if ($currentRole != "Administrator" && $currentRole != "MP") {
     <footer>
         <p>&copy; 2024 Parliament System</p>
     </footer>
+
+    <!-- Modal for Logout Confirmation -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="closeModal">&times;</span>
+            <p>Are you sure you want to log out?</p>
+            <button id="confirmLogout" class="action-button">Yes</button>
+            <button id="cancelLogout" class="action-button">No</button>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get the modal
+        var modal = document.getElementById("logoutModal");
+
+        // Get the button that opens the modal
+        var logoutButton = document.getElementById("logoutButton");
+
+        // When the user clicks the button, open the modal 
+        logoutButton.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementById("closeModal");
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        // Confirm logout
+        document.getElementById("confirmLogout").onclick = function() {
+            window.location.href = "LogOut";
+        }
+
+        // Cancel logout
+        document.getElementById("cancelLogout").onclick = function() {
+            modal.style.display = "none";
+        }
+    </script>
 </body>
 
 </html>

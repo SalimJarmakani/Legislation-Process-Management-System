@@ -1,5 +1,11 @@
 <?php
 
+//get notifications 
+require_once "././Repositories/NotificationRepository.php";
+$notiRepo = new NotificationRepository();
+$notifications = $notiRepo->getAllNotificationsForUser($_SESSION["Id"]);
+
+
 $currentRole = $_SESSION["Role"];
 
 if ($currentRole != "Reviewer") {
@@ -15,6 +21,8 @@ if ($currentRole != "Reviewer") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <title>Reviewer Dashboard</title>
     <style>
         body {
@@ -165,9 +173,22 @@ if ($currentRole != "Reviewer") {
         <h3 style="color:#ff0000"> <?= isset($error) ? $error : "" ?></h3>
         <nav>
             <a href="#">Home</a>
-            <a href="#">Profile</a>
-            <a href="Bill/AddBill">Add New Bill</a>
             <a href="#" id="logout-btn">Logout</a> <!-- Modified to trigger the modal -->
+            <div class="dropdown">
+                <button class="btn dropdown-toggle" type="button" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    🔔 Notifications
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                    <?php foreach ($notifications as $notification) : ?>
+                        <li>
+                            <a class="dropdown-item <?php echo $notification->getIsRead() ? '' : 'unread'; ?>" href="#">
+                                <p class="mb-1"><?php echo htmlspecialchars($notification->getMessage()); ?></p>
+                                <small class="text-muted"><?php echo date("Y-m-d H:i", strtotime($notification->getCreatedTime())); ?></small>
+                            </a>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
         </nav>
 
         <!-- The Logout Confirmation Modal -->
@@ -189,6 +210,11 @@ if ($currentRole != "Reviewer") {
                             <?php if ($bill->getStatus() === 'Draft'): ?>
                                 <div class="bill">
                                     <p><?php echo htmlspecialchars($bill->getTitle()) . " - Creation Date: " . htmlspecialchars($bill->getCreatedTime()); ?></p>
+                                    <!-- Review Button for Draft Bills -->
+                                    <form action="Bill/Review" method="GET">
+                                        <input type="hidden" name="billId" value="<?php echo htmlspecialchars($bill->getId()); ?>">
+                                        <button type="submit" class="button">Review Bill</button>
+                                    </form>
                                 </div>
                             <?php endif; ?>
                         <?php endforeach; ?>
@@ -242,41 +268,41 @@ if ($currentRole != "Reviewer") {
                 </div>
             </div>
         </div>
-    </div>
-    <footer>
-        <p>&copy; 2024 Parliament System</p>
-    </footer>
+        <footer>
+            <p>&copy; 2024 Parliament System</p>
+        </footer>
 
-    <script>
-        // Get elements
-        const logoutBtn = document.getElementById("logout-btn");
-        const modal = document.getElementById("logout-modal");
-        const confirmLogout = document.getElementById("confirm-logout");
-        const cancelLogout = document.getElementById("cancel-logout");
+        <script>
+            // Get elements
+            const logoutBtn = document.getElementById("logout-btn");
+            const modal = document.getElementById("logout-modal");
+            const confirmLogout = document.getElementById("confirm-logout");
+            const cancelLogout = document.getElementById("cancel-logout");
 
-        // Show modal when logout is clicked
-        logoutBtn.addEventListener("click", function(e) {
-            e.preventDefault();
-            modal.style.display = "block";
-        });
+            // Show modal when logout is clicked
+            logoutBtn.addEventListener("click", function(e) {
+                e.preventDefault();
+                modal.style.display = "block";
+            });
 
-        // If "OK" is clicked, redirect to logout
-        confirmLogout.addEventListener("click", function() {
-            window.location.href = "LogOut";
-        });
+            // If "OK" is clicked, redirect to logout
+            confirmLogout.addEventListener("click", function() {
+                window.location.href = "LogOut";
+            });
 
-        // If "Cancel" is clicked, hide the modal
-        cancelLogout.addEventListener("click", function() {
-            modal.style.display = "none";
-        });
-
-        // Close the modal if the user clicks outside of it
-        window.addEventListener("click", function(event) {
-            if (event.target == modal) {
+            // If "Cancel" is clicked, hide the modal
+            cancelLogout.addEventListener("click", function() {
                 modal.style.display = "none";
-            }
-        });
-    </script>
+            });
+
+            // Close the modal if the user clicks outside of it
+            window.addEventListener("click", function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            });
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

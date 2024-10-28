@@ -1,9 +1,9 @@
 <?php
 
-require_once './BaseController.php';
-require_once './repositories/BillRepository.php';
-require_once './repositories/AmendmentRepository.php';
-require_once './repositories/VoteRepository.php';
+require_once  'BaseController.php';
+require_once __DIR__ . '/../repositories/BillRepository.php';
+require_once __DIR__ . '/../repositories/AmendmentRepository.php';
+require_once __DIR__ . '/../repositories/VoteRepository.php';
 
 
 class BillController extends BaseController
@@ -40,10 +40,12 @@ class BillController extends BaseController
 
     public function createBill($title, $description, $draft)
     {
+
         $authorId = $_SESSION["Id"];
         if (!isset($authorId)) throw new Error("Please Login and Try Again");
 
         $bill = new Bill(null, $title, $description, $authorId, $draft, "Draft", null, null);
+
 
         try {
             $result = $this->billRepository->CreateBill($bill);
@@ -57,6 +59,56 @@ class BillController extends BaseController
         }
     }
 
+    public function editBill($billData)
+    {
+
+        extract($billData);
+        $params = $this->getBillPageParams($billId);
+
+        $this->render("Bill/EditBill", $params);
+    }
+
+    public function updateBill($billId, $title, $description, $draft_content)
+    {
+        $authorId = $_SESSION["Id"];
+
+        // Validate that the author ID is set and the bill ID is valid
+        if (!isset($authorId)) throw new Error("Please Login and Try Again");
+        if (!isset($billId)) throw new Error("Invalid Bill ID");
+
+        // Create a new Bill object with the updated details
+        $bill = new Bill(
+            $billId,
+            $title,
+            $description,
+            $authorId,
+            $draft_content,
+            null,
+            null,
+            date('Y-m-d H:i:s')
+        );
+        try {
+            // Call the repository to update the bill
+            $result = $this->billRepository->updateBill($bill);
+            if ($result) {
+                // Redirect or render a success message
+                $successMessage = "Bill updated successfully.";
+                $params = $this->getBillPageParams($billId);
+                $params['success'] = $successMessage;
+                $this->render("Bill/BillPage", $params);
+            } else {
+                // Handle failure to update
+                $params = $this->getBillPageParams($billId);
+                $params['error'] = "Failed to update the bill.";
+                $this->render("Bill/BillPage", $params);
+            }
+        } catch (Exception $e) {
+            // Handle any exceptions during the update process
+            $params = $this->getBillPageParams($billId);
+            $params['error'] = "Error: " . $e->getMessage();
+            $this->render("Bill/BillPage", $params);
+        }
+    }
     public function startBillVoting($billId)
     {
         $this->billRepository->initiateBillVoting($billId);
@@ -102,6 +154,15 @@ class BillController extends BaseController
         }
     }
 
+    public function viewBill($billData)
+    {
+        extract($billData);
+
+        $params = $this->getBillPageParams($billId);
+
+        $this->render("Bill/BillPage", $params);
+    }
+
     public function submitVote($vote, $billId)
     {
         $mpId = $_SESSION["Id"];
@@ -116,5 +177,55 @@ class BillController extends BaseController
         }
 
         $this->render("Bill/voting", $params);
+    }
+
+    public function billAdmin($billData)
+    {
+
+        extract($billData);
+
+        $params = $this->getBillPageParams($billId);
+        $this->render("Bill/BillAdmin", $params);
+    }
+
+    public function endVotingSession($billId)
+    {
+        try {
+            $status = $this->billRepository->endVotingSession($billId);
+
+            $updatedBill = $this->billRepository->getBillById($billId);
+
+            // Create a success message based on the status
+            switch ($status) {
+                case 'Approved':
+                    $message = "The bill has been approved successfully.";
+                    break;
+                case 'Rejected':
+                    $message = "The bill has been rejected.";
+                    break;
+                case 'Under Review':
+                default:
+                    $message = "The voting session ended, and the bill is still under review.";
+                    break;
+            }
+
+
+            $params = [
+                "bill" => $updatedBill,
+                "message" => $message,
+                "votes" => $this->voteRepository->getVotes($billId),
+            ];
+
+
+            // Render the appropriate view with the message and updated bill data
+            $this->render("Bill/BillAdmin", $params);
+        } catch (Exception $e) {
+            // Handle any exceptions and return an error message
+            $params = [
+                "error" => "Error ending the voting session: " . $e->getMessage(),
+                "bill" => $this->billRepository->getBillById($billId),
+            ];
+            $this->render("Bill/BillPage", $params);
+        }
     }
 }

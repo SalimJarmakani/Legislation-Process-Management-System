@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 include_once "./helpers.php";
 $router = include "./routes.php";
 

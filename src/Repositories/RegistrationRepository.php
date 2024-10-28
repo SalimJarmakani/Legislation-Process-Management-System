@@ -146,8 +146,10 @@ class RegistrationRepository
             // Since query returns an array, access the first element
             $hashedPassword = $user[0]['password_hash'];
 
-            // Verify the password
-            if (password_verify($password, $hashedPassword)) {
+            /* Verify the password (I added the or statement for accounts created using sql script 
+            when first creating docker image 
+            these users will not have a hashed password)*/
+            if (password_verify($password, $hashedPassword) || $password == $hashedPassword) {
                 return true; // Credentials are valid
             }
         }

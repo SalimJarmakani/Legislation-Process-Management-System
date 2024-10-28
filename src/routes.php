@@ -1,5 +1,5 @@
 <?php
-include "./Router.php";
+include_once "./Router.php";
 $router = new Router();
 
 $GLOBALS["BASE_URL"] = getBasePath();
@@ -21,7 +21,9 @@ $router->addRoute("Bill/Review", "reviewBill", BillController::class, "GET");
 $router->addRoute("Bill/AddAmendment", "addAmendment", BillController::class, 'POST');
 $router->addRoute("Bill/Voting", "voting", BillController::class, "GET");
 $router->addRoute("Bill/SubmitVote", "submitVote", BillController::class, "POST");
-
-
-
+$router->addRoute("Bill", "viewBill", BillController::class, "GET");
+$router->addRoute("Bill/EditBill", "editBill", BillController::class, "GET");
+$router->addRoute("Bill/UpdateBill", "updateBill", BillController::class, "POST");
+$router->addRoute("Bill/BillAdmin", "billAdmin", BillController::class, "GET");
+$router->addRoute("Bill/EndVoting", "endVotingSession", BillController::class, "POST");
 return $router;

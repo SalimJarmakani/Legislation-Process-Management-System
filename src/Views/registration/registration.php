@@ -8,31 +8,55 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #fff;
+            background-color: #f4f4f9;
             color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
         .container {
             width: 400px;
-            margin: 0 auto;
             padding: 35px;
-            border: 2px solid #ff0000;
-            background-color: #ffcccc;
+            border: 1px solid #ff0000;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .main-title {
+            font-size: 25px;
+            text-align: center;
+            color: #ff0000;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
 
         h2 {
             text-align: center;
             color: #ff0000;
+            font-size: 24px;
+            margin-bottom: 20px;
         }
 
         input[type="text"],
         input[type="email"],
-        input[type="password"] {
-            width: 100%;
+        input[type="password"],
+        .role-selection input[type="radio"] {
+            width: calc(100% - 20px);
             padding: 10px;
             margin: 10px 0;
-            border: 1px solid #ff0000;
+            border: 1px solid #ddd;
             border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #ff6666;
         }
 
         input[type="submit"] {
@@ -42,18 +66,43 @@
             padding: 10px;
             width: 100%;
             border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #cc0000;
+        }
+
+        .role-selection {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .role-selection h3 {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .role-selection label {
+            display: inline-block;
+            margin: 0 10px;
+            font-size: 16px;
+            color: #555;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h2>Register</h2>
+        <div class="main-title">Legislation System Registration</div>
         <form action="<?= $GLOBALS["BASE_URL"] ?>register" method="POST">
-            <input type="text" name="name" placeholder="name" required>
+            <input type="text" name="name" placeholder="Name" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
-            <input type="submit" value="Register">
             <div class="role-selection">
                 <h3>Select Your Role:</h3>
                 <label>
@@ -66,8 +115,8 @@
                     <input type="radio" name="role" value="Reviewer" required> Reviewer
                 </label>
             </div>
+            <input type="submit" value="Register">
         </form>
-
     </div>
 </body>
 

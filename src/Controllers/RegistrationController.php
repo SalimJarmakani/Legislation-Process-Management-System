@@ -75,9 +75,6 @@ class RegistrationController extends BaseController
         //destroy session
         session_destroy();
 
-        //remove logged In cookie
-
-
         include "./Views/registration/loggedOut.php";
     }
     // Handle registration logic

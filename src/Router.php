@@ -8,7 +8,7 @@
 $files = glob("./Controllers/*.*"); // Use *.* to match all files
 
 foreach ($files as $file) {
-    include $file; // Or require $file
+    include_once $file; // Or require $file
 }
 include_once "helpers.php";
 
