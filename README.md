@@ -9,5 +9,5 @@ This legislation management system supports the legislative process of the Feder
 - **Tonmoy Bagchi**: Developed UML sequence diagrams and worked on the frontend.
 - **Karina Fatima Fernandez**: Contributed to frontend development and testing.
 
-*Note: Team members were not familiar with GitHub and preferred to send files directly to the Team Lead for inclusion in the repository.*
+*Note: Team members were not familiar with GitHub and preferred to send files directly to me the Team Lead for inclusion in the repository.*
 
