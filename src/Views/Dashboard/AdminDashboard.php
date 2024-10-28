@@ -2,15 +2,16 @@
 
 //get notifications 
 require_once __DIR__ . "/../../Repositories/NotificationRepository.php";
-$notiRepo = new NotificationRepository();
-$notifications = $notiRepo->getAllNotificationsForUser($_SESSION["Id"]);
 
-$currentRole = $_SESSION["Role"];
+$currentRole = isset($_SESSION["Role"]) ? $_SESSION["Role"] : "";
 
 // Only allow Administrator to view this page
 if ($currentRole != "Administrator") {
     header("Location: notFound");
 }
+
+$notiRepo = new NotificationRepository();
+$notifications = $notiRepo->getAllNotificationsForUser($_SESSION["Id"]);
 
 ?>
 

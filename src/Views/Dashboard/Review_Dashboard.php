@@ -3,17 +3,16 @@
 //get notifications 
 require_once __DIR__ . "/../../Repositories/NotificationRepository.php";
 
-
-$notiRepo = new NotificationRepository();
-$notifications = $notiRepo->getAllNotificationsForUser($_SESSION["Id"]);
-
-
-$currentRole = $_SESSION["Role"];
+$currentRole = isset($_SESSION["Role"]) ? $_SESSION["Role"] : "";
 
 if ($currentRole != "Reviewer") {
     header("Location: notFound");
     exit(); // Ensure exit after header redirect
 }
+
+$notiRepo = new NotificationRepository();
+$notifications = $notiRepo->getAllNotificationsForUser($_SESSION["Id"]);
+
 
 ?>
 
