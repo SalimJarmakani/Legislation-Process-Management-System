@@ -17,4 +17,10 @@ class UserController extends BaseController
 
         $this->render("user/add");
     }
+
+    public function startUnitTest()
+    {
+
+        include_once __DIR__ . "/../unitTests.php";
+    }
 }

@@ -26,4 +26,5 @@ $router->addRoute("Bill/EditBill", "editBill", BillController::class, "GET");
 $router->addRoute("Bill/UpdateBill", "updateBill", BillController::class, "POST");
 $router->addRoute("Bill/BillAdmin", "billAdmin", BillController::class, "GET");
 $router->addRoute("Bill/EndVoting", "endVotingSession", BillController::class, "POST");
+$router->addRoute("unitTests", "startUnitTest", UserController::class, "GET");
 return $router;
